@@ -27,7 +27,6 @@ func main() {
 	failOnError(err, "Failed to connect to RabbitMQ")
 
 	worker.Wait()
-
 }
 
 func failOnError(err error, msg string) {

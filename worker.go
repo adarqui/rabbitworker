@@ -40,7 +40,7 @@ func NewSimpleWorker(queues []Queue, conn *Connection) (Worker, error) {
 	err = ch.Qos(
 		3,     // prefetch count
 		0,     // prefetch size
-		true, // global
+		false, // global
 	)
 	if err != nil {
 		return nil, err
@@ -112,6 +112,10 @@ func (this *SimpleWorker) Wait() {
 }
 
 func (this *SimpleWorker) Quit() []error {
+	defer func() {
+		this.ch.Close()
+		this.conn.Close()
+	}()
 	errors := make([]error, 0)
 	for _, queue := range this.Queues {
 		err := this.ch.Cancel(queue.Name, false)
@@ -119,6 +123,5 @@ func (this *SimpleWorker) Quit() []error {
 			errors = append(errors, err)
 		}
 	}
-	defer this.ch.Close()
 	return errors
 }

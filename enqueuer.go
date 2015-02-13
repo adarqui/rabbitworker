@@ -34,8 +34,17 @@ func NewSimpleEnqueuer(conn *Connection) (Enqueuer, error) {
 	return se, err
 }
 
+func NewSimpleEnqueuerDial(amqpUrl string) (Enqueuer, error) {
+	conn, err := Dial(amqpUrl)
+	if err != nil {
+		return nil, err
+	}
+	return NewSimpleEnqueuer(conn)
+}
+
 func (this *SimpleEnqueuer) Shutdown() {
 	this.ch.Close()
+	this.conn.Close()
 }
 
 func (this *SimpleEnqueuer) EnqueueS(queue string, body string) error {

@@ -15,11 +15,8 @@ func failOnError(err error, msg string) {
 }
 
 func main() {
-	conn, err := rabbitworker.Dial("amqp://guest:guest@localhost:5672/")
+	e, err := rabbitworker.NewSimpleEnqueuerDial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
-	defer conn.Close()
-
-	e, err := rabbitworker.NewSimpleEnqueuer(conn)
 
 	e.EnqueueS("queue1", "This is a text message1")
 
