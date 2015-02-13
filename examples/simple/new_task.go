@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"strconv"
-	"time"
 
 	"github.com/streadway/amqp"
 	"github.com/wricardo/rabbitworker"
@@ -24,7 +22,7 @@ func main() {
 
 	e, err := rabbitworker.NewSimpleEnqueuer(conn)
 
-	e.EnqueueS("queue1", "This is a text message"+strconv.Itoa(x))
+	e.EnqueueS("queue1", "This is a text message1")
 
 	e.Shutdown()
 }

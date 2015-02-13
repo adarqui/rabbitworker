@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-type HandlerFunc func(string, []byte) error
+type HandlerFunc func(string, *amqp.Delivery) error
 
 type Queues []Queue
 
@@ -91,10 +91,7 @@ func (this *SimpleWorker) Start() error {
 		this.wg.Add(1)
 		go func(queue Queue) {
 			for d := range queue.c {
-				err = queue.Handler(queue.Name, d.Body)
-				if err == nil {
-					d.Ack(false)
-				}
+				queue.Handler(queue.Name, &d)
 			}
 			this.wg.Done()
 		}(queue)

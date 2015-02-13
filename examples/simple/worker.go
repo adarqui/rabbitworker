@@ -41,12 +41,16 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func HandlerQueue1(queue string, body []byte) error {
+func HandlerQueue1(queue string, d *amqp.Delivery) error {
+	body := d.Body
 	fmt.Println("Queue 1", string(body))
+	d.Ack(false)
 	return nil
 }
 
-func HandlerQueue2(queue string, body []byte) error {
+func HandlerQueue2(queue string, d *amqp.Delivery) error {
+	body := d.Body
 	fmt.Println("Queue 2", string(body))
+	d.Ack(false)
 	return nil
 }
