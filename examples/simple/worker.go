@@ -19,7 +19,7 @@ func main() {
 	}
 
 	worker, err := rabbitworker.NewSimpleWorkerDial("amqp://guest:guest@localhost:5672/", queues)
-    failOnError(err, "Failed to connect to RabbitMQ")
+	failOnError(err, "Failed to connect to RabbitMQ")
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 
@@ -48,4 +48,3 @@ func HandlerQueue2(queue string, body []byte, ack rabbitworker.AckFunc) error {
 	ack(false)
 	return nil
 }
-
