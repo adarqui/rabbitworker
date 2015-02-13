@@ -12,13 +12,13 @@ type Enqueuer interface {
 }
 
 type SimpleEnqueuer struct {
-	conn *amqp.Connection
+	conn *Connection
 	ch   *amqp.Channel
 	//	ack  chan uint64
 	//	nack chan uint64
 }
 
-func NewSimpleEnqueuer(conn *amqp.Connection) (Enqueuer, error) {
+func NewSimpleEnqueuer(conn *Connection) (Enqueuer, error) {
 	var err error
 	se := new(SimpleEnqueuer)
 	se.conn = conn

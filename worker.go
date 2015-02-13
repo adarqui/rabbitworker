@@ -5,13 +5,14 @@ import (
 	"sync"
 )
 
-type HandlerFunc func(string, *amqp.Delivery) error
+type AckFunc func(bool) error
+type HandlerFuncAck func(string, []byte, AckFunc ) error
 
 type Queues []Queue
 
 type Queue struct {
 	Name    string
-	Handler HandlerFunc
+	Handler HandlerFuncAck
 	c       <-chan amqp.Delivery
 }
 
@@ -24,11 +25,11 @@ type Worker interface {
 type SimpleWorker struct {
 	Queues []Queue
 	wg     *sync.WaitGroup
-	conn   *amqp.Connection
+	conn   *Connection
 	ch     *amqp.Channel
 }
 
-func NewSimpleWorker(queues []Queue, conn *amqp.Connection) (Worker, error) {
+func NewSimpleWorker(queues []Queue, conn *Connection) (Worker, error) {
 	w := new(SimpleWorker)
 	w.Queues = queues
 	w.conn = conn
@@ -64,7 +65,6 @@ func (this *SimpleWorker) declareQueues() error {
 		if err != nil {
 			return err
 		}
-
 		msgs, err := this.ch.Consume(
 			q.Name, // queue
 			q.Name, // consumer
@@ -91,7 +91,7 @@ func (this *SimpleWorker) Start() error {
 		this.wg.Add(1)
 		go func(queue Queue) {
 			for d := range queue.c {
-				queue.Handler(queue.Name, &d)
+				queue.Handler(queue.Name, d.Body, d.Ack)
 			}
 			this.wg.Done()
 		}(queue)

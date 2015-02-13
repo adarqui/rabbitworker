@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/streadway/amqp"
 	"github.com/wricardo/rabbitworker"
 )
 
@@ -16,7 +15,7 @@ func failOnError(err error, msg string) {
 }
 
 func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := rabbitworker.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

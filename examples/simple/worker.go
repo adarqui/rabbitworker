@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/streadway/amqp"
 	"github.com/wricardo/rabbitworker"
 	"log"
 )
@@ -19,7 +18,7 @@ func main() {
 		},
 	}
 
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := rabbitworker.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -41,16 +40,15 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func HandlerQueue1(queue string, d *amqp.Delivery) error {
-	body := d.Body
+func HandlerQueue1(queue string, body []byte, ack rabbitworker.AckFunc) error {
 	fmt.Println("Queue 1", string(body))
-	d.Ack(false)
+	ack(false)
 	return nil
 }
 
-func HandlerQueue2(queue string, d *amqp.Delivery) error {
-	body := d.Body
+func HandlerQueue2(queue string, body []byte, ack rabbitworker.AckFunc) error {
 	fmt.Println("Queue 2", string(body))
-	d.Ack(false)
+	ack(false)
 	return nil
 }
+
