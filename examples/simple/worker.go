@@ -18,11 +18,8 @@ func main() {
 		},
 	}
 
-	conn, err := rabbitworker.Dial("amqp://guest:guest@localhost:5672/")
-	failOnError(err, "Failed to connect to RabbitMQ")
-	defer conn.Close()
-
-	worker, err := rabbitworker.NewSimpleWorker(queues, conn)
+	worker, err := rabbitworker.NewSimpleWorkerDial("amqp://guest:guest@localhost:5672/", queues)
+    failOnError(err, "Failed to connect to RabbitMQ")
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 
