@@ -6,7 +6,7 @@ import (
 )
 
 type AckFunc func(bool) error
-type HandlerFuncAck func(string, []byte, AckFunc ) error
+type HandlerFuncAck func(string, []byte, AckFunc) error
 
 type Queues []Queue
 
@@ -38,8 +38,8 @@ func NewSimpleWorker(queues []Queue, conn *Connection) (Worker, error) {
 		return nil, err
 	}
 	err = ch.Qos(
-		3,    // prefetch count
-		0,    // prefetch size
+		3,     // prefetch count
+		0,     // prefetch size
 		true, // global
 	)
 	if err != nil {
@@ -52,11 +52,11 @@ func NewSimpleWorker(queues []Queue, conn *Connection) (Worker, error) {
 }
 
 func NewSimpleWorkerDial(amqpUrl string, queues []Queue) (Worker, error) {
-    conn, err := Dial(amqpUrl)
-    if err != nil {
-        return nil, err
-    }
-    return NewSimpleWorker(queues, conn)
+	conn, err := Dial(amqpUrl)
+	if err != nil {
+		return nil, err
+	}
+	return NewSimpleWorker(queues, conn)
 }
 
 func (this *SimpleWorker) declareQueues() error {
