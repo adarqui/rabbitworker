@@ -51,6 +51,14 @@ func NewSimpleWorker(queues []Queue, conn *Connection) (Worker, error) {
 	return w, nil
 }
 
+func NewSimpleWorkerDial(amqpUrl string, queues []Queue) (Worker, error) {
+    conn, err := Dial(amqpUrl)
+    if err != nil {
+        return nil, err
+    }
+    return NewSimpleWorker(queues, conn)
+}
+
 func (this *SimpleWorker) declareQueues() error {
 	for k, v := range this.Queues {
 		q, err := this.ch.QueueDeclare(
